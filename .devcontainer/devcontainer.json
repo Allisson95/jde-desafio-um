@@ -1,0 +1,67 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/java-postgres
+{
+	"name": "Java & PostgreSQL",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "app",
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+	"features": {
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
+		"ghcr.io/devcontainers/features/node:1": {}
+	},
+
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	// "features": {}
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// This can be used to network with other containers or with the host.
+	// "forwardPorts": [5432],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "java -version",
+
+	// Configure tool-specific properties.
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"[java]": {
+					"editor.detectIndentation": false,
+					"editor.insertSpaces": true,
+					"editor.tabSize": 4
+				},
+				"java.codeGeneration.hashCodeEquals.useJava7Objects": true,
+				"java.compile.nullAnalysis.mode": "automatic",
+				"java.completion.favoriteStaticMembers": [
+					"org.assertj.core.api.Assertions.*",
+					"org.hamcrest.Matchers.*",
+					"org.hamcrest.MatcherAssert.*",
+					"org.junit.jupiter.api.Assertions.*",
+					"org.junit.jupiter.api.Assumptions.*",
+					"org.junit.jupiter.api.DynamicContainer.*",
+					"org.junit.jupiter.api.DynamicTest.*",
+					"org.mockito.Mockito.*",
+					"org.mockito.ArgumentMatchers.*",
+					"org.mockito.Answers.*",
+					"org.mockito.AdditionalAnswers.*",
+					"org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*",
+					"org.springframework.test.web.servlet.result.MockMvcResultHandlers.*",
+					"org.springframework.test.web.servlet.result.MockMvcResultMatchers.*",
+					"io.vavr.API.*"
+				],
+				"java.configuration.updateBuildConfiguration": "automatic",
+				"java.dependency.packagePresentation": "hierarchical",
+				"java.signatureHelp.description.enabled": true
+			},
+			"extensions": [
+				"vscjava.vscode-java-pack",
+				"vmware.vscode-boot-dev-pack",
+				"redhat.vscode-xml",
+				"redhat.vscode-yaml",
+				"sonarsource.sonarlint-vscode"
+			]
+		}
+	}
+
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	// "remoteUser": "root"
+}
