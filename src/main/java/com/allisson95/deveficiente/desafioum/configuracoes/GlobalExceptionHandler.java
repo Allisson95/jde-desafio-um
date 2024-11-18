@@ -37,6 +37,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.allisson95.deveficiente.desafioum.autor.AutorExistenteException;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
@@ -45,6 +46,18 @@ import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private static final String DEFAULT_ERROR_MESSAGE = "Ocorreu um erro inesperado no sistema. Tente novamente e se o problema persistir, entre em contato com o administrador do sistema.";
+
+    @ExceptionHandler({ AutorExistenteException.class })
+    @Nullable
+    protected ResponseEntity<Object> handleAutorExistente(
+            final @NonNull AutorExistenteException ex,
+            final @NonNull WebRequest request) {
+        final var status = HttpStatus.BAD_REQUEST;
+        final var problem = ProblemDetail.forStatusAndDetail(status, "Corpo da requisição inválido.");
+        problem.setProperty("errors", Map.of("detail", ex.getMessage(), "path", "$.email"));
+
+        return this.handleExceptionInternal(ex, problem, HttpHeaders.EMPTY, status, request);
+    }
 
     /**
      * {@inheritDoc}

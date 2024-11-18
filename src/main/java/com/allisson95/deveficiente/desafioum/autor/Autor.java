@@ -5,11 +5,16 @@ import java.util.UUID;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @Entity
+@Table(name = "autores", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_autores_email", columnNames = { "email" })
+})
 public class Autor {
 
     @Id

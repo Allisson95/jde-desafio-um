@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.validation.Valid;
 
 // 2
@@ -15,16 +13,24 @@ import jakarta.validation.Valid;
 @RequestMapping("/autores")
 public class AutoresContoller {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    private final AutorRepository autorRepository;
+
+    public AutoresContoller(final AutorRepository autorRepository) {
+        this.autorRepository = autorRepository;
+    }
 
     @Transactional
     @PostMapping
     // 1
     public Autor cadastrar(@RequestBody @Valid final NovoAutorRequest request) {
         // 1
+        autorRepository.findByEmail(request.email()).ifPresent(autor -> {
+            throw new AutorExistenteException(autor.getEmail());
+        });
+
+        // 1
         Autor autor = request.toModel();
-        entityManager.persist(autor);
+        autorRepository.persist(autor);
         return autor;
     }
 
