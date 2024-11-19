@@ -15,6 +15,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -45,6 +47,8 @@ import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     private static final String DEFAULT_ERROR_MESSAGE = "Ocorreu um erro inesperado no sistema. Tente novamente e se o problema persistir, entre em contato com o administrador do sistema.";
 
@@ -176,6 +180,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             final @NonNull HttpHeaders headers,
             final @NonNull HttpStatusCode status,
             final @NonNull WebRequest request) {
+        logger.error(ex.getMessage(), ex);
+
         if (body == null) {
             body = ProblemDetail.forStatusAndDetail(status,
                     DEFAULT_ERROR_MESSAGE);
