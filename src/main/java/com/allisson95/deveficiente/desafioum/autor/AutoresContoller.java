@@ -8,11 +8,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 
-// 2
+// 4
 @RestController
 @RequestMapping("/autores")
 public class AutoresContoller {
 
+    // 1
     private final AutorRepository autorRepository;
 
     public AutoresContoller(final AutorRepository autorRepository) {
@@ -30,8 +31,8 @@ public class AutoresContoller {
 
         // 1
         Autor autor = request.toModel();
-        autorRepository.persist(autor);
-        return autor;
+
+        return autorRepository.persist(autor);
     }
 
 }

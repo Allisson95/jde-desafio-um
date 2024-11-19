@@ -38,6 +38,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.allisson95.deveficiente.desafioum.autor.AutorExistenteException;
+import com.allisson95.deveficiente.desafioum.categoria.CategoriaExistenteException;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
@@ -55,6 +56,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         final var status = HttpStatus.BAD_REQUEST;
         final var problem = ProblemDetail.forStatusAndDetail(status, "Corpo da requisição inválido.");
         problem.setProperty("errors", Map.of("detail", ex.getMessage(), "path", "$.email"));
+
+        return this.handleExceptionInternal(ex, problem, HttpHeaders.EMPTY, status, request);
+    }
+
+    @ExceptionHandler({ CategoriaExistenteException.class })
+    @Nullable
+    protected ResponseEntity<Object> handleAutorExistente(
+            final @NonNull CategoriaExistenteException ex,
+            final @NonNull WebRequest request) {
+        final var status = HttpStatus.BAD_REQUEST;
+        final var problem = ProblemDetail.forStatusAndDetail(status, "Corpo da requisição inválido.");
+        problem.setProperty("errors", Map.of("detail", ex.getMessage(), "path", "$.nome"));
 
         return this.handleExceptionInternal(ex, problem, HttpHeaders.EMPTY, status, request);
     }
