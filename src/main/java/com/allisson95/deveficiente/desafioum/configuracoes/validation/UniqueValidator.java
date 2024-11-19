@@ -1,5 +1,7 @@
 package com.allisson95.deveficiente.desafioum.configuracoes.validation;
 
+import org.hibernate.validator.constraintvalidation.HibernateConstraintValidatorContext;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -29,6 +31,10 @@ public class UniqueValidator implements ConstraintValidator<Unique, Object> {
     public boolean isValid(final Object value, final ConstraintValidatorContext context) {
         if (value == null) {
             return true;
+        }
+
+        if (context instanceof HibernateConstraintValidatorContext) {
+            context.unwrap(HibernateConstraintValidatorContext.class).addMessageParameter("value", value);
         }
 
         final CriteriaBuilder cb = this.entityManager.getCriteriaBuilder();

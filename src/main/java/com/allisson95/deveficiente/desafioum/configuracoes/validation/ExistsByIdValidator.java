@@ -2,6 +2,8 @@ package com.allisson95.deveficiente.desafioum.configuracoes.validation;
 
 import java.util.Optional;
 
+import org.hibernate.validator.constraintvalidation.HibernateConstraintValidatorContext;
+
 import jakarta.persistence.EntityManager;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -25,6 +27,10 @@ public class ExistsByIdValidator implements ConstraintValidator<ExistsById, Obje
     public boolean isValid(final Object value, final ConstraintValidatorContext context) {
         if (value == null) {
             return true;
+        }
+
+        if (context instanceof HibernateConstraintValidatorContext) {
+            context.unwrap(HibernateConstraintValidatorContext.class).addMessageParameter("value", value);
         }
 
         return Optional.ofNullable(this.entityManager.find(entity, value)).isPresent();
