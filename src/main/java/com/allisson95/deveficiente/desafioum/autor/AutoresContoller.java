@@ -23,7 +23,7 @@ public class AutoresContoller {
     @Transactional
     @PostMapping
     // 1
-    public Autor cadastrar(@RequestBody @Valid final NovoAutorRequest request) {
+    public AutorResponse cadastrar(@RequestBody @Valid final NovoAutorRequest request) {
         // 1
         autorRepository.findByEmail(request.email()).ifPresent(autor -> {
             throw new AutorExistenteException(autor.getEmail());
@@ -32,7 +32,7 @@ public class AutoresContoller {
         // 1
         Autor autor = request.toModel();
 
-        return autorRepository.persist(autor);
+        return AutorResponse.of(autorRepository.persist(autor));
     }
 
 }

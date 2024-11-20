@@ -23,7 +23,7 @@ public class CategoriasController {
     @PostMapping
     @Transactional
     // 1
-    public Categoria cadastrar(@RequestBody @Valid final NovaCategoriaRequest request) {
+    public CategoriaResponse cadastrar(@RequestBody @Valid final NovaCategoriaRequest request) {
         // 1
         categoriaRepository.findByNome(request.nome()).ifPresent(categoria -> {
             throw new CategoriaExistenteException(categoria.getNome());
@@ -32,7 +32,7 @@ public class CategoriasController {
         // 1
         final Categoria categoria = request.toModel();
 
-        return categoriaRepository.persist(categoria);
+        return CategoriaResponse.of(categoriaRepository.persist(categoria));
     }
 
 }
