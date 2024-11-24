@@ -41,6 +41,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.allisson95.deveficiente.desafioum.autor.AutorExistenteException;
 import com.allisson95.deveficiente.desafioum.categoria.CategoriaExistenteException;
+import com.allisson95.deveficiente.desafioum.livro.LivroNaoEncontradoException;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
@@ -51,6 +52,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     private static final String DEFAULT_ERROR_MESSAGE = "Ocorreu um erro inesperado no sistema. Tente novamente e se o problema persistir, entre em contato com o administrador do sistema.";
+
+    @ExceptionHandler({ LivroNaoEncontradoException.class })
+    @Nullable
+    protected ResponseEntity<Object> handleLivroNaoEncontrado(
+            final @NonNull LivroNaoEncontradoException ex,
+            final @NonNull WebRequest request) {
+        final var status = HttpStatus.NOT_FOUND;
+        final var problem = ProblemDetail.forStatusAndDetail(status, ex.getMessage());
+
+        return this.handleExceptionInternal(ex, problem, HttpHeaders.EMPTY, status, request);
+    }
 
     @ExceptionHandler({ AutorExistenteException.class })
     @Nullable
