@@ -30,6 +30,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,7 +42,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.allisson95.deveficiente.desafioum.autor.AutorExistenteException;
 import com.allisson95.deveficiente.desafioum.categoria.CategoriaExistenteException;
-import com.allisson95.deveficiente.desafioum.livro.LivroNaoEncontradoException;
+import com.allisson95.deveficiente.desafioum.comum.exceptions.NotFoundException;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
@@ -53,10 +54,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private static final String DEFAULT_ERROR_MESSAGE = "Ocorreu um erro inesperado no sistema. Tente novamente e se o problema persistir, entre em contato com o administrador do sistema.";
 
-    @ExceptionHandler({ LivroNaoEncontradoException.class })
+    @ExceptionHandler({ NotFoundException.class })
     @Nullable
-    protected ResponseEntity<Object> handleLivroNaoEncontrado(
-            final @NonNull LivroNaoEncontradoException ex,
+    protected ResponseEntity<Object> handleNotFoundException(
+            final @NonNull NotFoundException ex,
             final @NonNull WebRequest request) {
         final var status = HttpStatus.NOT_FOUND;
         final var problem = ProblemDetail.forStatusAndDetail(status, ex.getMessage());
@@ -86,6 +87,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         problem.setProperty("errors", Map.of("detail", ex.getMessage(), "path", "$.nome"));
 
         return this.handleExceptionInternal(ex, problem, HttpHeaders.EMPTY, status, request);
+    }
+
+    @Override
+    @Nullable
+    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
+            final @NonNull HttpRequestMethodNotSupportedException ex,
+            final @NonNull HttpHeaders headers,
+            final @NonNull HttpStatusCode status,
+            final @NonNull WebRequest request) {
+        return this.handleExceptionInternal(ex, ex.getBody(), headers, status, request);
     }
 
     /**
