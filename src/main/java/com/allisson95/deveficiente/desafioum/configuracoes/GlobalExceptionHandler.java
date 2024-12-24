@@ -172,9 +172,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             final @NonNull HttpHeaders headers,
             final @NonNull HttpStatusCode status,
             final @NonNull WebRequest request) {
-        if (ex instanceof MethodArgumentTypeMismatchException) {
+        if (ex instanceof final MethodArgumentTypeMismatchException methodArgumentTypeMismatchException) {
             return this.handleMethodArgumentTypeMismatchException(
-                    (MethodArgumentTypeMismatchException) ex,
+                    methodArgumentTypeMismatchException,
                     headers,
                     status,
                     request);
@@ -208,7 +208,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             body = ProblemDetail.forStatusAndDetail(status, detail);
         }
 
-        final var writableHttpHeaders = HttpHeaders.writableHttpHeaders(headers);
+        final var writableHttpHeaders = new HttpHeaders(headers);
         writableHttpHeaders.setContentType(MediaType.APPLICATION_PROBLEM_JSON);
 
         return super.handleExceptionInternal(ex, body, headers, status, request);
@@ -281,13 +281,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                     final var message = error.getDefaultMessage();
                     var path = error.getObjectName();
 
-                    if (error instanceof FieldError) {
-                        path = ((FieldError) error).getField();
+                    if (error instanceof final FieldError fieldError) {
+                        path = fieldError.getField();
                     }
 
                     return Map.of("detail", message, "path", "$." + path);
                 })
-                .collect(Collectors.toList());
+                .toList();
 
         final var problem = ProblemDetail.forStatusAndDetail(status, "Propriedade inválida.");
         problem.setProperty("errors", errors);
