@@ -28,10 +28,10 @@ public class LivrosController {
         this.livroRepository = livroRepository;
     }
 
-    @PostMapping
     @Transactional
+    @PostMapping
     // 2
-    public LivroResponse criar(@RequestBody @Valid NovoLivroRequest novoLivroRequest) {
+    public LivroResponse criar(@RequestBody @Valid final NovoLivroRequest novoLivroRequest) {
         // 1
         final Livro livro = novoLivroRequest.toModel(this.entityManager);
         this.entityManager.persist(livro);
@@ -48,7 +48,7 @@ public class LivrosController {
 
     @GetMapping("{id}")
     // 1
-    public LivroDetalheResponse detalhar(@UUID(version = 4) @PathVariable String id) {
+    public LivroDetalheResponse detalhar(@UUID(version = 4) @PathVariable final String id) {
         // 1
         return this.livroRepository.findById(java.util.UUID.fromString(id))
                 .map(LivroDetalheResponse::of)

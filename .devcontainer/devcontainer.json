@@ -15,7 +15,7 @@
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// This can be used to network with other containers or with the host.
-	// "forwardPorts": [5432],
+	"forwardPorts": [8080, 8978],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "java -version",
@@ -24,12 +24,27 @@
 	"customizations": {
 		"vscode": {
 			"settings": {
+				"java.import.gradle.java.home": "/usr/local/sdkman/candidates/java/current",
 				"[java]": {
 					"editor.detectIndentation": false,
 					"editor.insertSpaces": true,
 					"editor.tabSize": 4
 				},
+				"java.cleanup.actions": [
+					"addDeprecated",
+					"addFinalModifier",
+					"addOverride",
+					"invertEquals",
+					"lambdaExpression",
+					"lambdaExpressionFromAnonymousClass",
+					"qualifyMembers",
+					"qualifyStaticMembers",
+					"renameFileToType",
+					"tryWithResource"
+				],
 				"java.codeGeneration.hashCodeEquals.useJava7Objects": true,
+				"java.codeGeneration.useBlocks": true,
+				"java.codeGeneration.addFinalForNewDeclaration": "all",
 				"java.compile.nullAnalysis.mode": "automatic",
 				"java.completion.favoriteStaticMembers": [
 					"org.assertj.core.api.Assertions.*",
@@ -49,7 +64,14 @@
 					"io.vavr.API.*"
 				],
 				"java.configuration.updateBuildConfiguration": "automatic",
+				"java.dependency.autoRefresh": true,
 				"java.dependency.packagePresentation": "hierarchical",
+				"java.dependency.syncWithFolderExplorer": true,
+				"java.inlayHints.parameterNames.enabled": "all",
+				"java.maven.downloadSources": true,
+				"java.saveActions.cleanup": true,
+				"java.saveActions.organizeImports": true,
+				"java.signatureHelp.enabled": true,
 				"java.signatureHelp.description.enabled": true
 			},
 			"extensions": [

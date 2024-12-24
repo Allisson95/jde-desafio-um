@@ -3,6 +3,7 @@ package com.allisson95.deveficiente.desafioum.estado;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,17 +31,18 @@ public class EstadosController {
         this.paisRepository = paisRepository;
     }
 
+    @Transactional
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     // 2
-    public EstadoResponse cadastrar(@PathVariable UUID paisId, @RequestBody @Valid NovoEstadoRequest request) {
+    public EstadoResponse cadastrar(@PathVariable final UUID paisId, @RequestBody @Valid final NovoEstadoRequest request) {
         // 1
-        if (!paisRepository.existsById(paisId)) {
+        if (!this.paisRepository.existsById(paisId)) {
             throw new PaisNaoEncontradoException(paisId.toString());
         }
 
         // 1
-        final Estado novoEstado = request.toModel(paisRepository.getReferenceById(paisId));
+        final Estado novoEstado = request.toModel(this.paisRepository.getReferenceById(paisId));
 
         return EstadoResponse.of(this.estadoRepository.persist(novoEstado));
     }

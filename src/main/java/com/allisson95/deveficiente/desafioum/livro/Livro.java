@@ -93,60 +93,60 @@ public class Livro {
     }
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public String getTitulo() {
-        return titulo;
+        return this.titulo;
     }
 
     public String getResumo() {
-        return resumo;
+        return this.resumo;
     }
 
     public String getSumario() {
-        return sumario;
+        return this.sumario;
     }
 
     public BigDecimal getPreco() {
-        return preco;
+        return this.preco;
     }
 
     public Integer getPaginas() {
-        return paginas;
+        return this.paginas;
     }
 
     public String getIsbn() {
-        return isbn;
+        return this.isbn;
     }
 
     public LocalDate getDataPublicacao() {
-        return dataPublicacao;
+        return this.dataPublicacao;
     }
 
     public Categoria getCategoria() {
-        return categoria;
+        return this.categoria;
     }
 
     public Autor getAutor() {
-        return autor;
+        return this.autor;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(titulo, isbn);
+        return Objects.hash(this.titulo, this.isbn);
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj)
             return true;
         if (obj == null)
             return false;
-        if (getClass() != obj.getClass())
+        if (this.getClass() != obj.getClass())
             return false;
-        Livro other = (Livro) obj;
-        return Objects.equals(titulo, other.titulo) && Objects.equals(isbn, other.isbn);
+        final Livro other = (Livro) obj;
+        return Objects.equals(this.titulo, other.titulo) && Objects.equals(this.isbn, other.isbn);
     }
 
 }

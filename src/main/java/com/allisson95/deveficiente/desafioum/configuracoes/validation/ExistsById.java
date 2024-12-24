@@ -21,7 +21,7 @@ import jakarta.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ExistsById {
 
-    String message() default "{jakarta.validation.constraints.ExistsById.message}";
+    String message() default "{com.allisson95.deveficiente.desafioum.configuracoes.validation.ExistsById.message}";
 
     Class<?>[] groups() default {};
 

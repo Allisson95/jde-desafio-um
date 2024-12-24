@@ -46,23 +46,23 @@ public class Autor {
     }
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public String getNome() {
-        return nome;
+        return this.nome;
     }
 
     public String getEmail() {
-        return email;
+        return this.email;
     }
 
     public String getDescricao() {
-        return descricao;
+        return this.descricao;
     }
 
     public Instant getCriadoEm() {
-        return criadoEm;
+        return this.criadoEm;
     }
 
 }

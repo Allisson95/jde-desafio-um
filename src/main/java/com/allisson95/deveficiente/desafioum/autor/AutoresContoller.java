@@ -25,14 +25,14 @@ public class AutoresContoller {
     // 1
     public AutorResponse cadastrar(@RequestBody @Valid final NovoAutorRequest request) {
         // 1
-        autorRepository.findByEmail(request.email()).ifPresent(autor -> {
+        this.autorRepository.findByEmail(request.email()).ifPresent(autor -> {
             throw new AutorExistenteException(autor.getEmail());
         });
 
         // 1
-        Autor autor = request.toModel();
+        final Autor autor = request.toModel();
 
-        return AutorResponse.of(autorRepository.persist(autor));
+        return AutorResponse.of(this.autorRepository.persist(autor));
     }
 
 }

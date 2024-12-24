@@ -20,19 +20,19 @@ public class CategoriasController {
         this.categoriaRepository = categoriaRepository;
     }
 
-    @PostMapping
     @Transactional
+    @PostMapping
     // 1
     public CategoriaResponse cadastrar(@RequestBody @Valid final NovaCategoriaRequest request) {
         // 1
-        categoriaRepository.findByNome(request.nome()).ifPresent(categoria -> {
+        this.categoriaRepository.findByNome(request.nome()).ifPresent(categoria -> {
             throw new CategoriaExistenteException(categoria.getNome());
         });
 
         // 1
         final Categoria categoria = request.toModel();
 
-        return CategoriaResponse.of(categoriaRepository.persist(categoria));
+        return CategoriaResponse.of(this.categoriaRepository.persist(categoria));
     }
 
 }

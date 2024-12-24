@@ -28,11 +28,11 @@ public class Categoria {
     }
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public String getNome() {
-        return nome;
+        return this.nome;
     }
 
 }

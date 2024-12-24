@@ -15,8 +15,6 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -49,8 +47,6 @@ import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-
-    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     private static final String DEFAULT_ERROR_MESSAGE = "Ocorreu um erro inesperado no sistema. Tente novamente e se o problema persistir, entre em contato com o administrador do sistema.";
 
@@ -111,12 +107,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             final @NonNull WebRequest request) {
         final var rootCause = ex.getCause();
 
-        if (rootCause instanceof PropertyBindingException) {
-            return handlePropertyBinding((PropertyBindingException) rootCause, headers, status, request);
+        if (rootCause instanceof final PropertyBindingException propertyBindingException) {
+            return this.handlePropertyBinding(propertyBindingException, headers, status, request);
         }
 
-        if (rootCause instanceof MismatchedInputException) {
-            return handleInvalidFormat((MismatchedInputException) rootCause, headers, status, request);
+        if (rootCause instanceof final MismatchedInputException mismatchedInputException) {
+            return this.handleInvalidFormat(mismatchedInputException, headers, status, request);
         }
 
         final var problem = ProblemDetail.forStatusAndDetail(status, "Corpo da requisição inválido.");
@@ -177,7 +173,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             final @NonNull HttpStatusCode status,
             final @NonNull WebRequest request) {
         if (ex instanceof MethodArgumentTypeMismatchException) {
-            return handleMethodArgumentTypeMismatchException(
+            return this.handleMethodArgumentTypeMismatchException(
                     (MethodArgumentTypeMismatchException) ex,
                     headers,
                     status,
@@ -191,7 +187,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleUncaught(final Exception ex, final WebRequest request) {
         final var status = HttpStatus.INTERNAL_SERVER_ERROR;
         final var problem = ProblemDetail.forStatusAndDetail(status,
-                DEFAULT_ERROR_MESSAGE);
+                GlobalExceptionHandler.DEFAULT_ERROR_MESSAGE);
         return this.handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
 
@@ -203,12 +199,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             final @NonNull HttpHeaders headers,
             final @NonNull HttpStatusCode status,
             final @NonNull WebRequest request) {
-        logger.error(ex.getMessage(), ex);
+        this.logger.error(ex.getMessage(), ex);
 
         if (body == null) {
             body = ProblemDetail.forStatusAndDetail(status,
-                    DEFAULT_ERROR_MESSAGE);
-        } else if (body instanceof String detail) {
+                    GlobalExceptionHandler.DEFAULT_ERROR_MESSAGE);
+        } else if (body instanceof final String detail) {
             body = ProblemDetail.forStatusAndDetail(status, detail);
         }
 
@@ -224,7 +220,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             final HttpStatusCode status,
             final WebRequest request) {
         final var path = this.joinReferences(ex.getPath());
-        final var expectedType = getExpectedType(ex.getTargetType());
+        final var expectedType = this.getExpectedType(ex.getTargetType());
 
         final var detail = "A propriedade recebeu o valor de um tipo inválido. Corrija e informe um valor compatível com o tipo: "
                 + expectedType;
@@ -240,7 +236,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             final HttpHeaders headers,
             final HttpStatusCode status,
             final WebRequest request) {
-        final var expectedType = getExpectedType(ex.getRequiredType());
+        final var expectedType = this.getExpectedType(ex.getRequiredType());
         final var detail = "O parâmetro recebeu o valor de um tipo inválido. Corrija e informe um valor compatível com o tipo especificado na documentação da api: "
                 + expectedType;
 

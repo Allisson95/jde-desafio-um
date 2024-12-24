@@ -24,7 +24,7 @@ public class PaisesController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     // 2
-    public PaisResponse cadastrar(@RequestBody @Valid NovoPaisRequest request) {
+    public PaisResponse cadastrar(@RequestBody @Valid final NovoPaisRequest request) {
         // 1
         final Pais novoPais = request.toModel();
         return PaisResponse.of(this.paisRepository.persist(novoPais));

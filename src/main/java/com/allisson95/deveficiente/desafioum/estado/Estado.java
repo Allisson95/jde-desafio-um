@@ -1,5 +1,6 @@
 package com.allisson95.deveficiente.desafioum.estado;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import com.allisson95.deveficiente.desafioum.pais.Pais;
@@ -41,15 +42,19 @@ public class Estado {
     }
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public String getNome() {
-        return nome;
+        return this.nome;
     }
 
     public Pais getPais() {
-        return pais;
+        return this.pais;
+    }
+
+    public boolean pertenceAoPais(final Pais pais) {
+        return Objects.equals(this.pais, pais);
     }
 
 }
