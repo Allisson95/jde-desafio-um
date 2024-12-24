@@ -95,3 +95,12 @@ ADD CONSTRAINT fk_pedidos_itens_pedidos FOREIGN key (pedido_id) REFERENCES pedid
 
 ALTER TABLE IF EXISTS pedidos_itens
 ADD CONSTRAINT fk_pedidos_itens_livros FOREIGN key (livro_id) REFERENCES livros;
+
+CREATE TABLE IF NOT EXISTS cupons_desconto (
+    id uuid NOT NULL,
+    codigo VARCHAR(255) NOT NULL,
+    percentual_desconto NUMERIC(38, 2) NOT NULL CHECK (percentual_desconto > 0),
+    validade TIMESTAMP(6) WITH TIME ZONE NOT NULL,
+    CONSTRAINT pk_cupons_desconto PRIMARY KEY (id),
+    CONSTRAINT uk_cupons_desconto_codigo UNIQUE (codigo)
+);
