@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.allisson95.deveficiente.desafioum.cupomdesconto.CuponsDescontoRepository;
+
 import jakarta.persistence.EntityManager;
 import jakarta.validation.Valid;
 
@@ -19,14 +21,17 @@ public class ComprasController {
 
     private final NovaCompraRequestValidator validator;
     private final ComprasRepository comprasRepository;
+    private final CuponsDescontoRepository cuponsDescontoRepository;
     private final EntityManager entityManager;
 
     public ComprasController(
             final NovaCompraRequestValidator validator,
             final ComprasRepository comprasRepository,
+            final CuponsDescontoRepository cuponsDescontoRepository,
             final EntityManager entityManager) {
         this.validator = validator;
         this.comprasRepository = comprasRepository;
+        this.cuponsDescontoRepository = cuponsDescontoRepository;
         this.entityManager = entityManager;
     }
 
@@ -39,7 +44,7 @@ public class ComprasController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public void comprar(@RequestBody @Valid final NovaCompraRequest request) {
-        this.comprasRepository.persist(request.toModel(this.entityManager));
+        this.comprasRepository.persist(request.toModel(this.entityManager, this.cuponsDescontoRepository));
     }
 
 }

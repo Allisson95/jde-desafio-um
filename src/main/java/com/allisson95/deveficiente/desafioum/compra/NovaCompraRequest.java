@@ -9,7 +9,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.allisson95.deveficiente.desafioum.configuracoes.validation.Documento;
+import com.allisson95.deveficiente.desafioum.configuracoes.validation.ExistsBy;
 import com.allisson95.deveficiente.desafioum.configuracoes.validation.ExistsById;
+import com.allisson95.deveficiente.desafioum.cupomdesconto.CupomDesconto;
+import com.allisson95.deveficiente.desafioum.cupomdesconto.CuponsDescontoRepository;
 import com.allisson95.deveficiente.desafioum.estado.Estado;
 import com.allisson95.deveficiente.desafioum.livro.Livro;
 import com.allisson95.deveficiente.desafioum.pais.Pais;
@@ -35,17 +38,23 @@ public record NovaCompraRequest(
         @NotNull @ExistsById(entity = Pais.class) UUID paisId,
         @ExistsById(entity = Estado.class) UUID estadoId,
         @NotBlank String telefone,
+        @ExistsBy(entity = CupomDesconto.class, field = "codigo") String codigoCupom,
         @NotNull @Valid PedidoRequest pedido) {
 
-    public Compra toModel(final EntityManager entityManager) {
+    public Optional<UUID> getEstadoId() {
+        return Optional.ofNullable(this.estadoId);
+    }
+
+    public Optional<String> getCodigoCupom() {
+        return Optional.ofNullable(this.codigoCupom);
+    }
+
+    public Compra toModel(final EntityManager entityManager, final CuponsDescontoRepository cupomRepository) {
         final Pais pais = entityManager.getReference(Pais.class, this.paisId());
-        final Estado estado = Optional.ofNullable(this.estadoId())
-                .map(estadoId -> entityManager.getReference(Estado.class, estadoId))
-                .orElse(null);
 
         final Function<Compra, Pedido> pedidoFactoryFn = compra -> this.pedido().toModel(compra, entityManager);
 
-        return new Compra(
+        final Compra novaCompra = new Compra(
                 this.email,
                 this.nome,
                 this.sobrenome,
@@ -55,9 +64,18 @@ public record NovaCompraRequest(
                 this.complemento,
                 this.cidade,
                 pais,
-                estado,
                 this.telefone,
                 pedidoFactoryFn);
+
+        this.getEstadoId()
+                .map(estadoId -> entityManager.getReference(Estado.class, estadoId))
+                .ifPresent(novaCompra::setEstado);
+
+        this.getCodigoCupom()
+                .flatMap(cupomRepository::findByCodigo)
+                .ifPresent(novaCompra::aplicarCupomDesconto);
+
+        return novaCompra;
     }
 
     public record PedidoRequest(

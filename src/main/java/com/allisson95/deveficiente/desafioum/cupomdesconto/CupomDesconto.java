@@ -1,7 +1,7 @@
 package com.allisson95.deveficiente.desafioum.cupomdesconto;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 
 import jakarta.persistence.Entity;
@@ -28,7 +28,7 @@ public class CupomDesconto {
 
     @NotNull
     @Future
-    private final LocalDateTime validade;
+    private final LocalDate validade;
 
     /**
      * @deprecated Para uso exclusivo do Hibernate
@@ -44,11 +44,23 @@ public class CupomDesconto {
     public CupomDesconto(
             @NotBlank final String codigo,
             @NotNull @Positive final BigDecimal percentualDesconto,
-            @NotNull @Future final LocalDateTime validade) {
+            @NotNull @Future final LocalDate validade) {
         this.id = UUID.randomUUID();
         this.codigo = codigo;
         this.percentualDesconto = percentualDesconto;
         this.validade = validade;
+    }
+
+    public boolean isValido() {
+        return LocalDate.now().compareTo(this.validade) <= 0;
+    }
+
+    public BigDecimal getPercentualDesconto() {
+        return this.percentualDesconto;
+    }
+
+    public LocalDate getValidade() {
+        return this.validade;
     }
 
 }

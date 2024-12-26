@@ -63,23 +63,19 @@ public class Pedido {
 
         this.compra = compra;
         this.itens.addAll(itens);
-        this.calculaTotal();
 
-        if (this.total().compareTo(total) != 0) {
+        this.calcularTotal();
+        if (this.total.compareTo(total) != 0) {
             throw new IllegalArgumentException("O total do pedido não corresponde ao total informado");
         }
     }
 
     @PostLoad
     void postLoad() {
-        this.calculaTotal();
+        this.calcularTotal();
     }
 
-    public BigDecimal total() {
-        return this.total;
-    }
-
-    private void calculaTotal() {
+    private void calcularTotal() {
         this.total = this.itens.stream()
                 .map(ItemPedido::total)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);

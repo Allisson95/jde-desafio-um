@@ -4,10 +4,12 @@ import java.util.UUID;
 import java.util.function.Function;
 
 import com.allisson95.deveficiente.desafioum.configuracoes.validation.Documento;
+import com.allisson95.deveficiente.desafioum.cupomdesconto.CupomDesconto;
 import com.allisson95.deveficiente.desafioum.estado.Estado;
 import com.allisson95.deveficiente.desafioum.pais.Pais;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -59,7 +61,7 @@ public class Compra {
 
     @ManyToOne(optional = true)
     @JoinColumn(name = "estado_id")
-    private final Estado estado;
+    private Estado estado;
 
     @NotBlank
     private final String telefone;
@@ -68,6 +70,10 @@ public class Compra {
     @NotNull
     @OneToOne(mappedBy = "compra", cascade = { CascadeType.PERSIST }, orphanRemoval = true)
     private final Pedido pedido;
+
+    @Valid
+    @Embedded
+    private CupomDescontoAplicado cupomDescontoAplicado;
 
     /**
      * @deprecated Para uso exclusivo do Hibernate
@@ -99,7 +105,6 @@ public class Compra {
             final String complemento,
             final String cidade,
             final Pais pais,
-            final Estado estado,
             final String telefone,
             final Function<Compra, Pedido> pedidoFactoryFn) {
         this.id = UUID.randomUUID();
@@ -112,61 +117,30 @@ public class Compra {
         this.complemento = complemento;
         this.cidade = cidade;
         this.pais = pais;
-        this.estado = estado;
         this.telefone = telefone;
         this.pedido = pedidoFactoryFn.apply(this);
     }
 
-    public UUID getId() {
-        return this.id;
+    public void setEstado(@NotNull @Valid final Estado estado) {
+        if (this.pais == null) {
+            throw new IllegalStateException("País não informado");
+        }
+        if (!this.pais.temEstados() || !estado.pertenceAoPais(this.pais)) {
+            throw new IllegalArgumentException("Estado não pertence ao país informado");
+        }
+        this.estado = estado;
     }
 
-    public String getEmail() {
-        return this.email;
-    }
+    public void aplicarCupomDesconto(@NotNull @Valid final CupomDesconto cupomDesconto) {
+        if (!cupomDesconto.isValido()) {
+            throw new IllegalArgumentException("O cupom de desconto informado não é válido");
+        }
 
-    public String getNome() {
-        return this.nome;
-    }
+        if (this.cupomDescontoAplicado != null) {
+            throw new IllegalArgumentException("Já existe um cupom de desconto aplicado a esta compra");
+        }
 
-    public String getSobrenome() {
-        return this.sobrenome;
-    }
-
-    public String getDocumento() {
-        return this.documento;
-    }
-
-    public String getCep() {
-        return this.cep;
-    }
-
-    public String getEndereco() {
-        return this.endereco;
-    }
-
-    public String getComplemento() {
-        return this.complemento;
-    }
-
-    public String getCidade() {
-        return this.cidade;
-    }
-
-    public Pais getPais() {
-        return this.pais;
-    }
-
-    public Estado getEstado() {
-        return this.estado;
-    }
-
-    public String getTelefone() {
-        return this.telefone;
-    }
-
-    public Pedido getPedido() {
-        return this.pedido;
+        this.cupomDescontoAplicado = new CupomDescontoAplicado(cupomDesconto);
     }
 
 }
