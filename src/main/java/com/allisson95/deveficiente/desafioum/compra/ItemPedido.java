@@ -47,6 +47,18 @@ public class ItemPedido {
         return this.precoUnitario.multiply(BigDecimal.valueOf(this.quantidade));
     }
 
+    public Livro getLivro() {
+        return this.livro;
+    }
+
+    public Integer getQuantidade() {
+        return this.quantidade;
+    }
+
+    public BigDecimal getPrecoUnitario() {
+        return this.precoUnitario;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(this.livro);

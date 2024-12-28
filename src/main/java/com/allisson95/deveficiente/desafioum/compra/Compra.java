@@ -1,5 +1,7 @@
 package com.allisson95.deveficiente.desafioum.compra;
 
+import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -141,6 +143,72 @@ public class Compra {
         }
 
         this.cupomDescontoAplicado = new CupomDescontoAplicado(cupomDesconto);
+    }
+
+    public BigDecimal total() {
+        return this.pedido.getTotal();
+    }
+
+    public BigDecimal totalComDesconto() {
+        return this.getCupomDescontoAplicado()
+                .map(cupom -> cupom.totalComDesconto(this.total()))
+                .orElse(null);
+    }
+
+    public UUID getId() {
+        return this.id;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public String getNome() {
+        return this.nome;
+    }
+
+    public String getSobrenome() {
+        return this.sobrenome;
+    }
+
+    public String getDocumento() {
+        return this.documento;
+    }
+
+    public String getCep() {
+        return this.cep;
+    }
+
+    public String getEndereco() {
+        return this.endereco;
+    }
+
+    public String getComplemento() {
+        return this.complemento;
+    }
+
+    public String getCidade() {
+        return this.cidade;
+    }
+
+    public Pais getPais() {
+        return this.pais;
+    }
+
+    public Optional<Estado> getEstado() {
+        return Optional.ofNullable(this.estado);
+    }
+
+    public String getTelefone() {
+        return this.telefone;
+    }
+
+    public Pedido getPedido() {
+        return this.pedido;
+    }
+
+    public Optional<CupomDescontoAplicado> getCupomDescontoAplicado() {
+        return Optional.ofNullable(this.cupomDescontoAplicado);
     }
 
 }

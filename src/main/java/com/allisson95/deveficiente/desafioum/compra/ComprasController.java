@@ -1,9 +1,13 @@
 package com.allisson95.deveficiente.desafioum.compra;
 
+import java.util.UUID;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +49,13 @@ public class ComprasController {
     @PostMapping
     public void comprar(@RequestBody @Valid final NovaCompraRequest request) {
         this.comprasRepository.persist(request.toModel(this.entityManager, this.cuponsDescontoRepository));
+    }
+
+    @GetMapping("{compraId}")
+    public CompraResponse buscarCompra(@PathVariable final String compraId) {
+        return this.comprasRepository.findById(UUID.fromString(compraId))
+                .map(CompraResponse::new)
+                .orElseThrow(() -> new CompraNaoEncontradaException(compraId));
     }
 
 }

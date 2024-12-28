@@ -81,4 +81,20 @@ public class Pedido {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
+    public UUID getId() {
+        return this.id;
+    }
+
+    public Compra getCompra() {
+        return this.compra;
+    }
+
+    public Set<ItemPedido> getItens() {
+        return this.itens;
+    }
+
+    public BigDecimal getTotal() {
+        return this.total;
+    }
+
 }

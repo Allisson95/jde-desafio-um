@@ -1,6 +1,7 @@
 package com.allisson95.deveficiente.desafioum.compra;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 
 import com.allisson95.deveficiente.desafioum.cupomdesconto.CupomDesconto;
@@ -46,6 +47,14 @@ public class CupomDescontoAplicado {
         this.cupomDesconto = cupomDesconto;
         this.percentualDesconto = cupomDesconto.getPercentualDesconto();
         this.validade = cupomDesconto.getValidade();
+    }
+
+    BigDecimal totalComDesconto(final BigDecimal total) {
+        return total
+                .subtract(total
+                        .multiply(this.percentualDesconto
+                                .divide(new BigDecimal("100"))))
+                .setScale(2, RoundingMode.HALF_EVEN);
     }
 
 }
